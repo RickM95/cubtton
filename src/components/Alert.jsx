@@ -7,7 +7,7 @@ const Alert = ({ message, type = 'info', duration = 3000, onClose }) => {
         if (duration) {
             const timer = setTimeout(() => {
                 setIsVisible(false);
-                setTimeout(onClose, 300); // Wait for fade out animation
+                setTimeout(onClose, 300);
             }, duration);
             return () => clearTimeout(timer);
         }
@@ -16,44 +16,44 @@ const Alert = ({ message, type = 'info', duration = 3000, onClose }) => {
     if (!isVisible) return null;
 
     const typeStyles = {
-        success: 'bg-green-100/90 dark:bg-green-900/40 text-green-800 dark:text-green-100 border-green-200 dark:border-green-800',
-        error: 'bg-red-100/90 dark:bg-red-900/40 text-red-800 dark:text-red-100 border-red-200 dark:border-red-800',
-        loading: 'bg-taupe/90 dark:bg-taupe/40 text-brown dark:text-ivory border-taupe/50',
-        info: 'bg-blue-100/90 dark:bg-blue-900/40 text-blue-800 dark:text-blue-100 border-blue-200 dark:border-blue-800',
+        success: 'bg-green-600 text-white border-green-700 shadow-green-900/20',
+        error: 'bg-red-600 text-white border-red-700 shadow-red-900/20',
+        loading: 'bg-gray-800 text-white border-gray-900 shadow-gray-900/20',
+        info: 'bg-blue-600 text-white border-blue-700 shadow-blue-900/20',
     };
 
-    // Modern icons
+    // icons
     const icons = {
         success: (
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
             </svg>
         ),
         error: (
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         ),
         loading: (
-            <svg className="animate-spin w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
         ),
         info: (
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
         )
     };
 
     return (
-        <div className={`fixed top-24 right-4 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg glass backdrop-blur-md border border-opacity-20 transition-all duration-300 animate-slide-in ${typeStyles[type] || typeStyles.info} min-w-[300px]`}>
-            <span className="flex-shrink-0">{icons[type]}</span>
-            <p className="font-medium text-sm flex-1">{message}</p>
-            <button onClick={() => { setIsVisible(false); setTimeout(onClose, 300); }} className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition">
-                <svg className="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+        <div className={`fixed top-6 right-6 z-[99999] flex items-center gap-4 px-6 py-5 rounded-xl shadow-2xl transition-all duration-300 animate-slide-in border ${typeStyles[type] || typeStyles.info} min-w-[320px] max-w-md`}>
+            <span className="flex-shrink-0 opacity-90">{icons[type]}</span>
+            <p className="font-bold text-sm md:text-base flex-1 tracking-wide leading-relaxed">{message}</p>
+            <button onClick={() => { setIsVisible(false); setTimeout(onClose, 300); }} className="p-1.5 -mr-2 rounded-full hover:bg-white/20 transition-colors">
+                <svg className="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>

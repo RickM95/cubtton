@@ -35,7 +35,6 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     }
 
     if (requiredRole && user.role !== requiredRole) {
-        // If user is logged in but doesn't have the required role (e.g. client trying to access admin)
         return <Navigate to="/" replace />;
     }
 

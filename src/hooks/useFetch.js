@@ -1,12 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
-/**
- * Custom hook for data fetching with loading, error, and data states.
- * 
- * @param {string} url - The URL to fetch data from.
- * @param {object} options - Fetch options.
- * @returns {object} - { data, loading, error, refetch }
- */
+// hook
+// gets data
 const useFetch = (url, options = {}) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);

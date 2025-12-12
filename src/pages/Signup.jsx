@@ -46,7 +46,6 @@ const Signup = () => {
                 fullName: formData.fullName,
                 username: formData.username
             });
-            alert("Account created successfully! Please log in.");
             navigate('/login');
         } catch (err) {
             setError(err.message || 'Failed to create account');
@@ -58,7 +57,7 @@ const Signup = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-canvas dark:bg-charcoal px-4 py-8">
             <div className="max-w-md w-full py-8 px-8 glass shadow-lg rounded-xl my-8">
-                <h2 className="text-3xl font-bold text-center text-brown dark:text-stone mb-8">
+                <h2 className="text-3xl font-bold text-center text-brown mb-8">
                     Create Account
                 </h2>
 
@@ -70,7 +69,7 @@ const Signup = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-brown dark:text-stone mb-1">
+                        <label className="block text-sm font-medium text-brown mb-1">
                             Full Name
                         </label>
                         <input
@@ -85,7 +84,7 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-brown dark:text-stone mb-1">
+                        <label className="block text-sm font-medium text-brown mb-1">
                             Username
                         </label>
                         <input
@@ -100,7 +99,7 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-brown dark:text-stone mb-1">
+                        <label className="block text-sm font-medium text-brown mb-1">
                             Email
                         </label>
                         <input
@@ -115,7 +114,7 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-brown dark:text-stone mb-1">
+                        <label className="block text-sm font-medium text-brown mb-1">
                             Password
                         </label>
                         <input
@@ -129,7 +128,7 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-brown dark:text-stone mb-1">
+                        <label className="block text-sm font-medium text-brown mb-1">
                             Confirm Password
                         </label>
                         <input
@@ -150,7 +149,7 @@ const Signup = () => {
                         {loading ? 'Creating Account...' : 'Sign Up'}
                     </button>
 
-                    <div className="text-sm text-center text-brown/60 dark:text-stone/60 mt-4">
+                    <div className="text-sm text-center text-brown/60/60 mt-4">
                         Already have an account?
                         <Link to="/login" className="text-terracotta hover:underline ml-1">
                             Sign In

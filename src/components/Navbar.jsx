@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { useCart } from '../context/CartContext';
 import Logo from '../assets/Logo.jpg';
 import TeddyDay from '../assets/teddy-bear-day.png';
 import TeddyNight from '../assets/teddy-bear-night.png';
@@ -10,16 +11,14 @@ const Navbar = () => {
   const [isDark, setIsDark] = useState(false);
   const [user, setUser] = useState(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { cartCount, toggleCart } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check auth state on mount
     authService.getCurrentUser().then(setUser).catch(console.error);
 
-    // Listen for auth changes (optional, but good for robust apps)
-    // For now we rely on the mount check and explicit actions
-  }, [location.pathname]); // Re-check on nav change to capture login updates
+  }, [location.pathname]);
 
   useEffect(() => {
     if (isDark) {
@@ -41,7 +40,7 @@ const Navbar = () => {
     { name: 'Shop', path: '/products' },
   ];
 
-  // If user is NOT logged in, add Login link
+  // login
   if (!user) {
     navLinks.push({ name: 'Login', path: '/login' });
   }
@@ -51,7 +50,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
 
-          {/* Mobile Menu Button */}
+          {/* mobile */}
           <div className="flex md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -69,16 +68,34 @@ const Navbar = () => {
                 </svg>
               )}
             </button>
+
+
+            {/* cart */}
+            {!location.pathname.startsWith('/admin') && (
+              <button
+                onClick={toggleCart}
+                className="p-2 mr-2 text-brown dark:text-brown hover:text-terracotta transition-colors relative"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {cartCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-terracotta text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
 
-          {/* Logo */}
+          {/* logo */}
           <div className="flex-1 flex justify-center md:justify-start lg:justify-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img className="h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:opacity-90" src={Logo} alt="Cubtton" />
             </Link>
           </div>
 
-          {/* Desktop Menu & Toggle */}
+          {/* desktop */}
           <div className="hidden md:flex items-center absolute right-8 space-x-6">
             <div className="flex items-baseline space-x-8">
               {navLinks.map((link) => (
@@ -95,7 +112,7 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Profile Dropdown (Desktop) */}
+            {/* profile */}
             {user && (
               <div className="relative">
                 <button
@@ -149,7 +166,24 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Theme Toggle */}
+            {/* cart */}
+            {!location.pathname.startsWith('/admin') && (
+              <button
+                onClick={toggleCart}
+                className="p-1 rounded-full text-brown dark:text-brown hover:text-terracotta dark:hover:text-terracotta transition-colors relative"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-terracotta text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {/* theme */}
             <button
               onClick={() => setIsDark(!isDark)}
               className="p-1 rounded-full hover:bg-canvas dark:hover:bg-canvas/10 transition-colors"
@@ -165,67 +199,69 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden glass bg-taupe/90 dark:bg-taupe/90 border-t border-brown/20 dark:border-brown/30">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === link.path
-                  ? 'text-brown dark:text-brown bg-terracotta/20'
-                  : 'text-brown/80 dark:text-brown/90 hover:text-brown dark:hover:text-brown hover:bg-terracotta/10'
-                  }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-
-            {user && (
-              <>
+      {/* menu */}
+      {
+        isOpen && (
+          <div className="md:hidden glass bg-taupe/90 dark:bg-taupe/90 border-t border-brown/20 dark:border-brown/30">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {navLinks.map((link) => (
                 <Link
-                  to="/profile"
+                  key={link.name}
+                  to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-brown/80 dark:text-brown/90 hover:text-brown hover:bg-terracotta/10"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${location.pathname === link.path
+                    ? 'text-brown dark:text-brown bg-terracotta/20'
+                    : 'text-brown/80 dark:text-brown/90 hover:text-brown dark:hover:text-brown hover:bg-terracotta/10'
+                    }`}
                 >
-                  Your Profile
+                  {link.name}
                 </Link>
-                {user.role === 'admin' && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-terracotta/90 hover:text-terracotta hover:bg-terracotta/10"
-                  >
-                    Admin Dashboard
-                  </Link>
-                )}
-                <button
-                  onClick={() => { handleLogout(); setIsOpen(false); }}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-terracotta/10"
-                >
-                  Sign Out
-                </button>
-              </>
-            )}
+              ))}
 
-            {/* Mobile Theme Toggle */}
-            <button
-              onClick={() => setIsDark(!isDark)}
-              className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-brown dark:text-brown hover:text-terracotta dark:hover:text-terracotta hover:bg-terracotta/10 flex items-center gap-2 transition-colors"
-            >
-              <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
-              <img
-                src={isDark ? TeddyNight : TeddyDay}
-                alt={isDark ? "Dark Mode Bear" : "Light Mode Bear"}
-                className="w-6 h-6 object-contain"
-              />
-            </button>
+              {user && (
+                <>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-brown/80 dark:text-brown/90 hover:text-brown hover:bg-terracotta/10"
+                  >
+                    Your Profile
+                  </Link>
+                  {user.role === 'admin' && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsOpen(false)}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-terracotta/90 hover:text-terracotta hover:bg-terracotta/10"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { handleLogout(); setIsOpen(false); }}
+                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-terracotta/10"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              )}
+
+              {/* theme */}
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-brown dark:text-brown hover:text-terracotta dark:hover:text-terracotta hover:bg-terracotta/10 flex items-center gap-2 transition-colors"
+              >
+                <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
+                <img
+                  src={isDark ? TeddyNight : TeddyDay}
+                  alt={isDark ? "Dark Mode Bear" : "Light Mode Bear"}
+                  className="w-6 h-6 object-contain"
+                />
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </nav>
+        )
+      }
+    </nav >
   );
 };
 

@@ -2,7 +2,7 @@
 import { supabase } from '../utils/supabase';
 
 export const authService = {
-    // Sign up a new user
+    // signup
     async signUp({ email, password, fullName, username }) {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -18,7 +18,7 @@ export const authService = {
         return data;
     },
 
-    // Log in an existing user
+    // login
     async login({ email, password }) {
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -28,32 +28,48 @@ export const authService = {
         return data;
     },
 
-    // Log out
+    // google
+    async loginWithGoogle() {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
+                redirectTo: window.location.origin
+            }
+        });
+        if (error) throw error;
+        return data;
+    },
+
+    // logout
     async logout() {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
     },
 
-    // Get current session
+    // session
     async getSession() {
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
         return data.session;
     },
 
-    // Get current user details including profile/role
+    // user
     async getCurrentUser() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
 
-        // Fetch profile to get role
+        // profile
         const { data: profile, error } = await supabase
             .from('profiles')
             .select('role')
             .eq('id', user.id)
             .single();
 
-        if (error && error.code !== 'PGRST116') { // Ignore "Row not found" if profile isn't ready yet
+        if (error && error.code !== 'PGRST116') { // check
             console.error('Error fetching profile:', error);
         }
 
@@ -63,13 +79,22 @@ export const authService = {
         };
     },
 
-    // Update user profile (metadata)
+    // update
     async updateProfile({ fullName, avatarUrl }) {
         const { data, error } = await supabase.auth.updateUser({
             data: {
                 full_name: fullName,
                 avatar_url: avatarUrl
             }
+        });
+        if (error) throw error;
+        return data;
+    },
+
+    // password
+    async updatePassword(newPassword) {
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword
         });
         if (error) throw error;
         return data;

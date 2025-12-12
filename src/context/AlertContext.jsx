@@ -14,12 +14,7 @@ export const useAlert = () => {
 export const AlertProvider = ({ children }) => {
     const [alert, setAlert] = useState(null);
 
-    /**
-     * Show an alert message.
-     * @param {string} message - The message to display.
-     * @param {string} type - 'success', 'error', 'loading', 'info'.
-     * @param {number} duration - Time in ms before auto-close (default 3000ms).
-     */
+    // alert
     const showAlert = useCallback((message, type = 'info', duration = 3000) => {
         setAlert({ message, type, duration, id: Date.now() });
     }, []);

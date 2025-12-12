@@ -1,26 +1,22 @@
 
 import { supabase } from '../utils/supabase';
 
-export const productService = {
-    // products
-    async getProducts() {
-        console.log("get products");
+export const threadService = {
+    // Get all threads
+    async getThreads() {
         const { data, error } = await supabase
-            .from('products')
+            .from('threads')
             .select('*')
             .order('id', { ascending: true });
 
-        if (error) {
-            console.log("err");
-            throw error;
-        }
+        if (error) throw error;
         return data;
     },
 
-    // Get single product
-    async getProductById(id) {
+    // Get single thread by ID
+    async getThreadById(id) {
         const { data, error } = await supabase
-            .from('products')
+            .from('threads')
             .select('*')
             .eq('id', id)
             .single();
@@ -29,11 +25,11 @@ export const productService = {
         return data;
     },
 
-    // Create product (Admin only, enforced by RLS)
-    async createProduct(productData) {
+    // Create new thread
+    async createThread(threadData) {
         const { data, error } = await supabase
-            .from('products')
-            .insert([productData])
+            .from('threads')
+            .insert([threadData])
             .select()
             .single();
 
@@ -41,10 +37,10 @@ export const productService = {
         return data;
     },
 
-    // Update product (Admin only)
-    async updateProduct(id, updates) {
+    // Update existing thread
+    async updateThread(id, updates) {
         const { data, error } = await supabase
-            .from('products')
+            .from('threads')
             .update(updates)
             .eq('id', id)
             .select()
@@ -54,10 +50,10 @@ export const productService = {
         return data;
     },
 
-    // Delete product (Admin only)
-    async deleteProduct(id) {
+    // Delete thread
+    async deleteThread(id) {
         const { error } = await supabase
-            .from('products')
+            .from('threads')
             .delete()
             .eq('id', id);
 

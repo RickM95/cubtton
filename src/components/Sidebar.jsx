@@ -12,7 +12,7 @@ const Sidebar = () => {
 
     return (
         <>
-            {/* Menu Toggle Button */}
+            {/* toggle */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="fixed left-4 top-24 z-50 p-3 bg-white dark:bg-sand rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-sand/30 dark:border-cloud/20"
@@ -42,7 +42,7 @@ const Sidebar = () => {
                 </svg>
             </button>
 
-            {/* Overlay */}
+            {/* overlay */}
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
@@ -50,13 +50,13 @@ const Sidebar = () => {
                 />
             )}
 
-            {/* Sidebar */}
+            {/* sidebar */}
             <div
                 className={`fixed left-0 top-0 h-full w-72 bg-white dark:bg-sand shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 <div className="p-6 pt-24">
-                    {/* Sidebar Header */}
+                    {/* header */}
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold text-brown dark:text-brown mb-2 transition-colors">
                             Categories
@@ -64,7 +64,7 @@ const Sidebar = () => {
                         <div className="w-16 h-1 bg-mauve rounded-full"></div>
                     </div>
 
-                    {/* Category List */}
+                    {/* list */}
                     <nav className="space-y-2">
                         {categories.map((category) => (
                             <Link
@@ -83,7 +83,7 @@ const Sidebar = () => {
                         ))}
                     </nav>
 
-                    {/* Footer Section */}
+                    {/* footer */}
                     <div className="mt-12 pt-6 border-t border-sand/30 dark:border-cloud/20">
                         <Link
                             to="/products"

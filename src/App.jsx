@@ -10,30 +10,41 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
+import ProductDetails from './pages/ProductDetails';
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/CartDrawer';
 
 function App() {
   return (
     <AlertProvider>
-      <Router>
-        <Layout>
+      <CartProvider>
+        <Router>
+          <CartDrawer />
           <Routes>
-            <Route path="/" element={<Products />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/profile" element={<Profile />} />
+            {/* public */}
+            <Route element={<Layout><Outlet /></Layout>}>
+              <Route path="/" element={<Products />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
 
-            {/* Admin Routes */}
+            {/* admin */}
             <Route path="/admin/*" element={
               <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
               </ProtectedRoute>
             } />
           </Routes>
-        </Layout>
-      </Router>
+        </Router>
+      </CartProvider>
     </AlertProvider >
   );
 }
+
+// helper
+import { Outlet } from 'react-router-dom';
 
 export default App;
