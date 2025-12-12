@@ -2,8 +2,8 @@
 import { supabase } from '../utils/supabase';
 
 export const userService = {
-    // Get all profiles/users
-    async getUsers() {
+    // Get all user profiles
+    async getAllUsers() {
         const { data, error } = await supabase
             .from('profiles')
             .select('*')
@@ -13,22 +13,12 @@ export const userService = {
         return data;
     },
 
-    // Get table row count (useful for stats)
-    async getUserCount() {
-        const { count, error } = await supabase
-            .from('profiles')
-            .select('*', { count: 'exact', head: true });
-
-        if (error) throw error;
-        return count;
-    },
-
-    // Update user role (Admin only)
-    async updateUserRole(id, newRole) {
+    // Update user role
+    async updateUserRole(userId, newRole) {
         const { data, error } = await supabase
             .from('profiles')
             .update({ role: newRole })
-            .eq('id', id)
+            .eq('id', userId)
             .select()
             .single();
 
@@ -36,12 +26,12 @@ export const userService = {
         return data;
     },
 
-    // Update user profile details
-    async updateUserProfile(id, updates) {
+    // Update user detail (full name, etc - Admin override)
+    async updateUserProfile(userId, updates) {
         const { data, error } = await supabase
             .from('profiles')
             .update(updates)
-            .eq('id', id)
+            .eq('id', userId)
             .select()
             .single();
 
@@ -49,14 +39,12 @@ export const userService = {
         return data;
     },
 
-    // Delete user (Admin only - currently deletes profile)
-    async deleteUser(id) {
-        const { error } = await supabase
-            .from('profiles')
-            .delete()
-            .eq('id', id);
-
+    // Trigger password reset email
+    async sendPasswordReset(email) {
+        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/update-password',
+        });
         if (error) throw error;
-        return true;
+        return data;
     }
 };

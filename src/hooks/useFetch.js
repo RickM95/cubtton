@@ -1,16 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 
-// hook
-// gets data
+
 const useFetch = (url, options = {}) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchData = useCallback(async () => {
-        // If no URL is provided, we can't fetch. 
-        // This allows the hook to be used conditionally or initialized without a URL.
-        if (!url) {
+  
             setLoading(false);
             return;
         }
