@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Light Mode - Warm & Cozy Neutrals */
+    --color-canvas: #FFF8F0;
+    /* Warm cream - cozy foundation */
+    --color-taupe: #F5E8DC;
+    /* Peachy taupe - warm secondary */
+    --color-brown: #4A3F35;
+    /* Charcoal Brown - Primary Text */
+    --color-terracotta: #E5A894;
+    /* Warm terracotta - inviting accent */
+    --color-olive: #9AAA85;
+    /* Warm olive - earthy secondary */
+
+    /* Legacy mappings for compatibility */
+    --color-ivory: var(--color-canvas);
+    --color-sand: var(--color-taupe);
+    --color-beige: var(--color-taupe);
+    --color-mauve: var(--color-terracotta);
+    --color-sage: var(--color-olive);
+    --color-aqua: var(--color-terracotta);
+    --color-green: var(--color-olive);
+
+    /* Text Colors */
+    --color-text-main: var(--color-brown);
+    --color-text-secondary: #6b5f54;
+  }
+
+  :root.dark {
+    /* Dark Mode - Elegant & Mom-Appealing */
+    --color-canvas: #3D3530;
+    /* Soft mocha - elegant and warm, not too dark */
+    --color-taupe: #4A423A;
+    /* Warm cocoa - sophisticated secondary */
+    --color-brown: #FFF9F4;
+    /* Creamy white - luxurious and soft */
+    --color-terracotta: #F8D4C8;
+    /* Soft blush - feminine and gentle */
+    --color-olive: #D4E0C8;
+    /* Pale sage - fresh and calming */
+
+    /* Legacy mappings for compatibility */
+    --color-ivory: var(--color-canvas);
+    --color-sand: var(--color-taupe);
+    --color-beige: var(--color-taupe);
+    --color-mauve: var(--color-terracotta);
+    --color-sage: var(--color-olive);
+    --color-aqua: var(--color-terracotta);
+    --color-green: var(--color-olive);
+
+    /* Text Colors */
+    --color-text-main: var(--color-brown);
+    --color-text-secondary: #e8dfd6;
+  }
+}
+
+@theme {
+  /* Primary colors */
+  --color-canvas: var(--color-canvas);
+  --color-taupe: var(--color-taupe);
+  --color-brown: var(--color-brown);
+  --color-terracotta: var(--color-terracotta);
+  --color-olive: var(--color-olive);
+
+  /* Legacy color names for backward compatibility */
+  --color-ivory: var(--color-ivory);
+  --color-sand: var(--color-sand);
+  --color-beige: var(--color-beige);
+  --color-cloud: #B8B8B8;
+  --color-mauve: var(--color-mauve);
+  --color-sage: var(--color-sage);
+  --color-aqua: var(--color-aqua);
+  --color-green: var(--color-green);
+
+  --color-primary: var(--color-taupe);
+  --color-secondary: var(--color-terracotta);
+  --color-accent: var(--color-olive);
+
+  --font-sans: 'Outfit', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  color: var(--color-text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 248, 240, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(74, 63, 53, 0.1);
+  }
+
+  /* Dark mode glass override */
+  :root.dark .glass {
+    background: rgba(74, 66, 58, 0.7);
+    border: 1px solid rgba(255, 249, 244, 0.15);
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, var(--color-terracotta), var(--color-olive));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

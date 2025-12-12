@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Baby Romper",
+        "price": "$45.00",
+        "description": "Soft and comfortable romper for your little one.",
+        "image": null
+    },
+    {
+        "id": 2,
+        "name": "Baby Swaddle",
+        "price": "$35.00",
+        "description": "Cozy swaddle to keep your baby warm and safe.",
+        "image": null
+    }
+]
