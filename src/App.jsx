@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy } from 'react';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
@@ -13,14 +12,19 @@ import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
+import ErrorBoundary from './components/ErrorBoundary';
+
+// Lazy load admin components
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 function App() {
   return (
-    <AlertProvider>
-      <CartProvider>
-        <Router>
-          <CartDrawer />
-          <Routes>
+    <ErrorBoundary>
+      <AlertProvider>
+        <CartProvider>
+          <Router>
+            <CartDrawer />
+            <Routes>
             {/* public */}
             <Route element={<Layout><Outlet /></Layout>}>
               <Route path="/" element={<Products />} />
@@ -34,13 +38,20 @@ function App() {
             {/* admin */}
             <Route path="/admin/*" element={
               <ProtectedRoute requiredRole="admin">
-                <AdminDashboard />
+                <Suspense fallback={
+                  <div className="flex items-center justify-center min-h-screen">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-terracotta"></div>
+                  </div>
+                }>
+                  <AdminDashboard />
+                </Suspense>
               </ProtectedRoute>
             } />
           </Routes>
-        </Router>
-      </CartProvider>
-    </AlertProvider >
+          </Router>
+        </CartProvider>
+      </AlertProvider>
+    </ErrorBoundary>
   );
 }
 

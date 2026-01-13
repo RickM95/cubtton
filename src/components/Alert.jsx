@@ -48,11 +48,11 @@ const Alert = ({ message, type = 'info', duration = 3000, onClose }) => {
     };
 
     return (
-        <div className={`fixed top-6 right-6 z-[99999] flex items-center gap-4 px-6 py-5 rounded-xl shadow-2xl transition-all duration-300 animate-slide-in border ${typeStyles[type] || typeStyles.info} min-w-[320px] max-w-md`}>
-            <span className="flex-shrink-0 opacity-90">{icons[type]}</span>
-            <p className="font-bold text-sm md:text-base flex-1 tracking-wide leading-relaxed">{message}</p>
-            <button onClick={() => { setIsVisible(false); setTimeout(onClose, 300); }} className="p-1.5 -mr-2 rounded-full hover:bg-white/20 transition-colors">
-                <svg className="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className={`fixed top-10 left-1/2 -translate-x-1/2 z-[99999] flex items-center gap-4 px-8 py-6 rounded-2xl shadow-2xl transition-all duration-300 animate-slide-in-top border-2 ${typeStyles[type] || typeStyles.info} min-w-[350px] max-w-lg md:min-w-[400px]`}>
+            <span className="flex-shrink-0 opacity-100 scale-125">{icons[type]}</span>
+            <p className="font-bold text-base md:text-lg flex-1 tracking-wide leading-relaxed">{message}</p>
+            <button onClick={() => { setIsVisible(false); setTimeout(onClose, 300); }} className="p-2 -mr-2 rounded-full hover:bg-white/20 transition-colors">
+                <svg className="w-6 h-6 opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

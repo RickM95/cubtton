@@ -15,8 +15,11 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Admin Dropdown State
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+
   useEffect(() => {
-    authService.getCurrentUser().then(setUser).catch(console.error);
+    authService.getCurrentUser().then(setUser).catch(() => {});
 
   }, [location.pathname]);
 
@@ -44,6 +47,16 @@ const Navbar = () => {
   if (!user) {
     navLinks.push({ name: 'Login', path: '/login' });
   }
+
+  const adminLinks = [
+    { name: 'Overview', path: '/admin' },
+    { name: 'Products', path: '/admin/products' },
+    { name: 'Orders', path: '/admin/orders' },
+    { name: 'Revenue', path: '/admin/revenue' },
+    { name: 'Users', path: '/admin/users' },
+    { name: 'Threads', path: '/admin/threads' },
+    { name: 'Hero Slider', path: '/admin/carousel' },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 glass bg-taupe/80 dark:bg-taupe/80 transition-colors duration-300 border-b border-brown/10 dark:border-brown/20">
@@ -110,6 +123,44 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
+
+              {/* Admin Dashboard Dropdown */}
+              {user && (user.role === 'admin' || user.role === 'supervisor') && (
+                <div className="relative group">
+                  <button
+                    onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+                    onMouseEnter={() => setIsAdminDropdownOpen(true)}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-bold tracking-wide transition-colors duration-300 ${location.pathname.startsWith('/admin')
+                      ? 'text-terracotta dark:text-terracotta'
+                      : 'text-brown/70 dark:text-brown/80 hover:text-brown dark:hover:text-brown'
+                      }`}
+                  >
+                    Dashboard
+                    <svg className={`w-4 h-4 transition-transform duration-200 ${isAdminDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isAdminDropdownOpen && (
+                    <div
+                      onMouseLeave={() => setIsAdminDropdownOpen(false)}
+                      className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white dark:bg-taupe rounded-xl shadow-xl py-2 border border-brown/10 ring-1 ring-black ring-opacity-5 z-50 animate-fade-in-up"
+                    >
+                      {adminLinks.map((item) => (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setIsAdminDropdownOpen(false)}
+                          className="block px-4 py-2 text-sm text-brown dark:text-brown/90 hover:bg-brown/5 hover:text-terracotta transition-colors"
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* profile */}
@@ -131,7 +182,7 @@ const Navbar = () => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-stone/90 rounded-md shadow-lg py-1 border border-brown/10 ring-1 ring-black ring-opacity-5 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-taupe rounded-md shadow-lg py-1 border border-brown/10 ring-1 ring-black ring-opacity-5 z-50">
                     <div className="px-4 py-2 text-sm text-brown dark:text-brown/80 border-b border-brown/10">
                       Signed in as<br />
                       <span className="font-bold truncate block">{user.email}</span>
@@ -145,15 +196,7 @@ const Navbar = () => {
                       Your Profile
                     </Link>
 
-                    {user.role === 'admin' && (
-                      <Link
-                        to="/admin"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="block px-4 py-2 text-sm text-terracotta hover:bg-brown/5 font-medium"
-                      >
-                        Admin Dashboard
-                      </Link>
-                    )}
+                    {/* Removed duplicated dashboard link from profile menu */}
 
                     <button
                       onClick={handleLogout}
@@ -202,7 +245,7 @@ const Navbar = () => {
       {/* menu */}
       {
         isOpen && (
-          <div className="md:hidden glass bg-taupe/90 dark:bg-taupe/90 border-t border-brown/20 dark:border-brown/30">
+          <div className="md:hidden glass bg-taupe/90 dark:bg-taupe/90 border-t border-brown/20 dark:border-brown/30 max-h-[80vh] overflow-y-auto">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navLinks.map((link) => (
                 <Link
@@ -218,6 +261,23 @@ const Navbar = () => {
                 </Link>
               ))}
 
+              {/* Admin Links for Mobile */}
+              {user && (user.role === 'admin' || user.role === 'supervisor') && (
+                <div className="border-t border-brown/10 my-2 pt-2">
+                  <p className="px-3 text-xs font-bold text-terracotta uppercase tracking-wider mb-2">Admin Dashboard</p>
+                  {adminLinks.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-brown/80 dark:text-brown/90 hover:text-terracotta hover:bg-terracotta/10 pl-6"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
               {user && (
                 <>
                   <Link
@@ -227,15 +287,7 @@ const Navbar = () => {
                   >
                     Your Profile
                   </Link>
-                  {user.role === 'admin' && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-terracotta/90 hover:text-terracotta hover:bg-terracotta/10"
-                    >
-                      Admin Dashboard
-                    </Link>
-                  )}
+
                   <button
                     onClick={() => { handleLogout(); setIsOpen(false); }}
                     className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-terracotta/10"

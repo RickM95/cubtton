@@ -11,31 +11,43 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('submit'); // check
         setLoading(true);
         setError('');
 
-        if (email === '' || password === '') {
-            console.log("empty");
+        // Input validation
+        if (!email || !password) {
+            setError('Please fill in all fields');
+            setLoading(false);
+            return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Please enter a valid email address');
+            setLoading(false);
+            return;
+        }
+
+        // Password validation
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            setLoading(false);
+            return;
         }
 
         try {
-            console.log("trying");
             await authService.login({ email, password });
 
             // user
             const user = await authService.getCurrentUser();
-            console.log(user);
 
             if (user?.role === 'admin') {
-                console.log("admin");
                 navigate('/admin');
             } else {
-                console.log("user");
                 navigate('/');
             }
         } catch (err) {
-            console.log("error");
             setError(err.message || 'Failed to login');
         } finally {
             setLoading(false);

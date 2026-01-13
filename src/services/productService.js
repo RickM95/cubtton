@@ -4,14 +4,12 @@ import { supabase } from '../utils/supabase';
 export const productService = {
     // products
     async getProducts() {
-        console.log("get products");
         const { data, error } = await supabase
             .from('products')
             .select('*')
             .order('id', { ascending: true });
 
         if (error) {
-            console.log("err");
             throw error;
         }
         return data;

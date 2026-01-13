@@ -103,10 +103,24 @@ const ThreadManager = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            // Clean up old preview if it exists
+            if (imagePreview && imagePreview.startsWith('blob:')) {
+                URL.revokeObjectURL(imagePreview);
+            }
             setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
         }
     };
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (imagePreview && imagePreview.startsWith('blob:')) {
+                URL.revokeObjectURL(imagePreview);
+            }
+        };
+    }, [imagePreview]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -179,7 +193,7 @@ const ThreadManager = () => {
             {loading ? (
                 <div className="text-center py-10 text-brown/60">Loading threads...</div>
             ) : (
-                <div className="bg-white/50 dark:bg-stone/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
+                <div className="bg-white/50 dark:bg-white/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -255,6 +269,17 @@ const ThreadManager = () => {
                             </button>
                         </div>
 
+                        {error && (
+                            <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6">
+                                {error}
+                            </div>
+                        )}
+                        {success && (
+                            <div className="bg-green-100 dark:bg-green-900/30 border border-green-400 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6">
+                                {success}
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div>
                                 <label className="block text-sm font-medium text-brown dark:text-gray-200 mb-1">Color Name</label>
@@ -287,7 +312,10 @@ const ThreadManager = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-brown dark:text-gray-200 mb-1">Thread Image (Embossing Preview)</label>
-                                <div className="border-2 border-dashed border-brown/20 dark:border-white/10 rounded-xl p-4 text-center hover:bg-brown/5 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => fileInputRef.current.click()}>
+                                <div
+                                    className="border-2 border-dashed border-brown/20 dark:border-white/10 rounded-xl p-4 text-center hover:bg-brown/5 dark:hover:bg-white/5 transition-colors cursor-pointer relative"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
                                     <input
                                         type="file"
                                         ref={fileInputRef}
@@ -336,6 +364,36 @@ const ThreadManager = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+            {/* Delete Confirmation Modal */}
+            {deleteModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-[#2a2a2a] rounded-xl shadow-2xl max-w-sm w-full p-6 border border-gray-100 dark:border-white/10">
+                        <h3 className="text-lg font-bold text-brown dark:text-white mb-2">Delete Thread?</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                            Are you sure you want to delete this thread? This action cannot be undone.
+                        </p>
+                        {error && (
+                            <div className="mb-4 text-red-600 text-sm bg-red-50 p-2 rounded">
+                                {error}
+                            </div>
+                        )}
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setDeleteModalOpen(false)}
+                                className="px-4 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 font-medium transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 font-medium shadow-lg shadow-red-600/20 transition-all"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

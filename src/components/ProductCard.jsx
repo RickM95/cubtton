@@ -8,10 +8,10 @@ const ProductCard = ({ product }) => {
   const { showAlert } = useAlert();
 
   const handleAddToCart = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     e.stopPropagation();
     addToCart(product);
-    showAlert(`${product.title} added to cart!`, 'success');
+    showAlert(`${product.name} added to cart!`, 'success');
   };
 
   return (
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
           {/* image */}
           <div className="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:scale-105 transition-transform duration-700">
             {product.image_url ? (
-              <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
             ) : (
               <div className="text-center p-4">
                 <span className="block text-4xl mb-2">🧸</span>
@@ -45,8 +45,8 @@ const ProductCard = ({ product }) => {
 
         <div className="p-6 text-center flex-grow flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-medium text-brown dark:text-white mb-1 font-sans transition-colors group-hover:text-mauve dark:group-hover:text-terracotta">{product.title}</h3>
-            <p className="text-mauve dark:text-terracotta font-medium">${product.price}</p>
+            <h3 className="text-lg font-medium text-brown dark:text-white mb-1 font-sans transition-colors group-hover:text-mauve dark:group-hover:text-terracotta">{product.name}</h3>
+            <p className="text-mauve dark:text-terracotta font-medium">${Number(product.price).toFixed(2)}</p>
           </div>
         </div>
       </div>

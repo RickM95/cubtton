@@ -22,7 +22,7 @@ const ProductDetails = () => {
                 setProduct(data);
                 setSelectedImage(data.image_url);
             } catch (err) {
-                console.error(err);
+                console.error("Error fetching product details:", err);
                 setError("Failed to load product details.");
             } finally {
                 setLoading(false);
@@ -34,7 +34,7 @@ const ProductDetails = () => {
     const handleAddToCart = () => {
         if (product) {
             addToCart(product);
-            showAlert(`${product.title} added to cart!`, 'success');
+            showAlert(`${product.name} added to cart!`, 'success');
         }
     };
 
@@ -72,7 +72,7 @@ const ProductDetails = () => {
                             {selectedImage ? (
                                 <img
                                     src={selectedImage}
-                                    alt={product.title}
+                                    alt={product.name}
                                     className="w-full h-full object-contain p-4 transition-all duration-300"
                                 />
                             ) : (
@@ -101,10 +101,10 @@ const ProductDetails = () => {
                     {/* info */}
                     <div className="flex flex-col justify-center">
                         <span className="text-mauve dark:text-terracotta text-sm uppercase tracking-widest font-bold mb-2">{product.category || 'Collection'}</span>
-                        <h1 className="text-4xl md:text-5xl font-bold text-brown dark:text-white mb-4 tracking-tight">{product.title}</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold text-brown dark:text-white mb-4 tracking-tight">{product.name}</h1>
 
                         <div className="flex items-center mb-6">
-                            <span className="text-3xl font-medium text-brown dark:text-gray-100 mr-4">${product.price}</span>
+                            <span className="text-3xl font-medium text-brown dark:text-gray-100 mr-4">${Number(product.price).toFixed(2)}</span>
                             {product.stock > 0 ? (
                                 <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider">In Stock</span>
                             ) : (

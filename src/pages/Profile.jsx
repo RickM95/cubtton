@@ -35,31 +35,31 @@ const Profile = () => {
     const [newName, setNewName] = useState('');
     const [message, setMessage] = useState({ text: '', type: '' });
 
-    useEffect(() => {
-        fetchProfile();
-    }, []);
-
-    const fetchProfile = async () => {
-        try {
-            const currentUser = await authService.getCurrentUser();
-            if (currentUser) {
-                setUser(currentUser);
-                setProfile({
-                    name: currentUser.user_metadata?.full_name || 'User',
-                    email: currentUser.email,
-                    role: currentUser.role || 'Client',
-                    avatarUrl: currentUser.user_metadata?.avatar_url || ''
-                });
-            } else {
-                navigate('/login');
+useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const currentUser = await authService.getCurrentUser();
+                if (currentUser) {
+                    setUser(currentUser);
+                    setProfile({
+                        name: currentUser.user_metadata?.full_name || 'User',
+                        email: currentUser.email,
+                        role: currentUser.role || 'Client',
+                        avatarUrl: currentUser.user_metadata?.avatar_url || ''
+                    });
+                } else {
+                    navigate('/login');
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                setMessage({ text: 'Failed to load profile.', type: 'error' });
+            } finally {
+                setLoading(prev => ({ ...prev, data: false }));
             }
-        } catch (error) {
-            console.error("Error fetching profile:", error);
-            setMessage({ text: 'Failed to load profile.', type: 'error' });
-        } finally {
-            setLoading(prev => ({ ...prev, data: false }));
-        }
-    };
+        };
+        
+        fetchProfile();
+}, [navigate]);
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];

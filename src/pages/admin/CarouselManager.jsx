@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { contentService } from '../../services/contentService';
 import { cloudinaryService } from '../../services/cloudinaryService';
 import { useAlert } from '../../context/AlertContext';
@@ -9,7 +9,7 @@ const CarouselManager = () => {
     const [uploading, setUploading] = useState(false);
     const { showAlert } = useAlert();
 
-    const fetchSlides = async () => {
+const fetchSlides = useCallback(async () => {
         try {
             const data = await contentService.getAllSlides();
             setSlides(data || []);
@@ -19,11 +19,11 @@ const CarouselManager = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [showAlert]);
 
-    useEffect(() => {
+useEffect(() => {
         fetchSlides();
-    }, []);
+    }, [fetchSlides]);
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
@@ -63,7 +63,8 @@ const CarouselManager = () => {
             await contentService.deleteSlide(slideToDelete);
             setSlides(slides.filter(s => s.id !== slideToDelete));
             showAlert("Slide deleted", "success");
-        } catch (error) {
+} catch (err) {
+            console.error("Delete error:", err);
             showAlert("Delete failed", "error");
         } finally {
             setDeleteModalOpen(false);
@@ -75,7 +76,8 @@ const CarouselManager = () => {
         try {
             await contentService.updateSlide(slide.id, { is_active: !slide.is_active });
             setSlides(slides.map(s => s.id === slide.id ? { ...s, is_active: !s.is_active } : s));
-        } catch (error) {
+} catch (err) {
+            console.error("Update error:", err);
             showAlert("Update failed", "error");
         }
     };
@@ -133,12 +135,15 @@ const CarouselManager = () => {
                     <div key={slide.id} className="bg-white dark:bg-[#2a2a2a] rounded-xl overflow-hidden shadow border border-brown/10 dark:border-white/5 group">
                         <div className="h-48 relative overflow-hidden">
                             <img src={slide.image_url} alt="Slide" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
                                     onClick={() => checkDelete(slide.id)}
-                                    className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                                    className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 shadow-lg"
+                                    title="Delete Slide"
                                 >
-                                    Delete
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>

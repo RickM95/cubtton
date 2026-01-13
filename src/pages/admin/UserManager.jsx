@@ -114,7 +114,7 @@ const UserManager = () => {
             {loading ? (
                 <div className="text-center py-10 text-brown/60">Loading users...</div>
             ) : (
-                <div className="bg-white/50 dark:bg-stone/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
+                <div className="bg-white/50 dark:bg-white/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -154,8 +154,8 @@ const UserManager = () => {
                                             </td>
                                             <td className="p-4">
                                                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${user.role === 'admin'
-                                                        ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300'
-                                                        : 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300'
+                                                    ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300'
+                                                    : 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300'
                                                     }`}>
                                                     {user.role}
                                                 </span>

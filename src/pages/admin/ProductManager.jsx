@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { productService } from '../../services/productService';
 import { cloudinaryService } from '../../services/cloudinaryService';
 
@@ -11,11 +11,11 @@ const ProductManager = () => {
     const [currentProductId, setCurrentProductId] = useState(null);
     const [error, setError] = useState(null);
     const [currentUserRole, setCurrentUserRole] = useState(null); // role
-    const fileInputRef = useRef(null);
+    
 
     // State
     const [formData, setFormData] = useState({
-        title: '',
+        name: '',
         price: '',
         description: '',
         category: '',
@@ -23,20 +23,18 @@ const ProductManager = () => {
     });
 
     const [stagingImages, setStagingImages] = useState([]); // { id: uniqueId, file: File|null, url: string, isMain: boolean }
-    const [uploading, setUploading] = useState(false);
+const [uploading, setUploading] = useState(false);
     const [success, setSuccess] = useState(null);
+    const [deleteModalOpen] = useState(false);
 
     const fetchProducts = async () => {
-        console.log("fetching");
         setLoading(true);
         setError(null);
         try {
             // get
             const data = await productService.getProducts();
-            console.log(data);
             setProducts(data || []);
         } catch (error) {
-            console.log("error");
             console.error("Error fetching products:", error);
             setError("Failed to load products. " + error.message);
         } finally {
@@ -53,10 +51,15 @@ const ProductManager = () => {
             setCurrentUserRole(user?.role);
         };
         fetchRole();
-    }, []);
+}, []);
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this product?")) return;
+    const checkDelete = (id) => {
+        if (window.confirm("Are you sure you want to delete this product?")) {
+            handleDeleteProduct(id);
+        }
+    };
+
+    const handleDeleteProduct = async (id) => {
         setError(null);
         try {
             await productService.deleteProduct(id);
@@ -153,7 +156,7 @@ const ProductManager = () => {
         setStagingImages(initialImages);
 
         setFormData({
-            title: product.title,
+            name: product.name,
             price: product.price,
             stock: product.stock || 0,
             description: product.description || '',
@@ -167,14 +170,13 @@ const ProductManager = () => {
         setSuccess(null);
         setEditMode(false);
         setCurrentProductId(null);
-        setFormData({ title: '', price: '', stock: 0, description: '', category: '', image: '' });
+        setFormData({ name: '', price: '', stock: 0, description: '', category: '', image: '' });
         setStagingImages([]);
         setIsModalOpen(true);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("submit form");
         setUploading(true);
         setError(null);
         setSuccess(null);
@@ -202,7 +204,7 @@ const ProductManager = () => {
                 .map(img => img.url);
 
             const productData = {
-                title: formData.title,
+                name: formData.name,
                 price: parseFloat(formData.price),
                 stock: parseInt(formData.stock) || 0,
                 description: formData.description,
@@ -264,13 +266,13 @@ const ProductManager = () => {
             {loading ? (
                 <div className="text-center py-10 text-brown/60">Loading products...</div>
             ) : (
-                <div className="bg-white/50 dark:bg-stone/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
+                <div className="bg-white/50 dark:bg-white/5 rounded-xl border border-brown/10 overflow-hidden shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-brown/5 dark:bg-white/5 text-brown">
                                     <th className="p-4">Image</th>
-                                    <th className="p-4">Title</th>
+                                    <th className="p-4">Name</th>
                                     <th className="p-4">Price</th>
                                     <th className="p-4">Stock</th>
                                     <th className="p-4">Category</th>
@@ -289,13 +291,13 @@ const ProductManager = () => {
                                         <tr key={product.id} className="border-t border-brown/10 hover:bg-white/40 dark:hover:bg-white/5 transition-colors">
                                             <td className="p-4">
                                                 {product.image_url ? (
-                                                    <img src={product.image_url} alt={product.title} className="w-12 h-12 object-cover rounded-lg border border-brown/10" />
+                                                    <img src={product.image_url} alt={product.name} className="w-12 h-12 object-cover rounded-lg border border-brown/10" />
                                                 ) : (
                                                     <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center text-xs text-gray-400">No Img</div>
                                                 )}
                                             </td>
-                                            <td className="p-4 font-medium text-brown">{product.title}</td>
-                                            <td className="p-4 text-brown">${product.price}</td>
+                                            <td className="p-4 font-medium text-brown">{product.name}</td>
+                                            <td className="p-4 text-brown">${Number(product.price).toFixed(2)}</td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
                                                     <input
@@ -375,12 +377,12 @@ const ProductManager = () => {
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="block text-sm font-medium text-brown dark:text-gray-200 mb-1">Product Title</label>
+                                    <label className="block text-sm font-medium text-brown dark:text-gray-200 mb-1">Product Name</label>
                                     <input
                                         className="w-full px-4 py-2 border border-brown/20 rounded-lg bg-white/50 dark:bg-black/20 dark:border-white/10 text-brown dark:text-gray-100 focus:ring-2 focus:ring-terracotta focus:outline-none transition-all placeholder:text-brown/40 dark:placeholder:text-gray-400"
                                         placeholder="e.g. Summer Dress"
-                                        value={formData.title}
-                                        onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         required
                                     />
 
